@@ -1,0 +1,15 @@
+{
+    "name": "session25/chat",
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fateme Atefrad",
+            "email": "fa.atefrad@gmail.com"
+        }
+    ],
+    "require": {}
+}
