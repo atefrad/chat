@@ -456,28 +456,28 @@ main .box a .nameBx .mess span{
     border-radius: 10px;
     z-index: 1;
 }
-.right .chatBx .messages.leftSide .message-body::before{
-    content: '';
-    position: absolute;
-    bottom: 0px;
-    left: -11px;
-    width: 20px;
-    height: 20px;
-    clip-path: polygon(0 100%, 100% 0, 100% 100%);
-    z-index: -1;
-    background: var(--mainClr);
-}
-.right .chatBx .messages.rightSide .message-body ::before{
-    content: '';
-    position: absolute;
-    bottom: 0px;
-    right: -11px;
-    width: 20px;
-    height: 20px;
-    clip-path: polygon(0 100%, 0 0, 100% 100%);
-    z-index: -1;
-    background: var(--mainClr);
-}
+/*.right .chatBx .messages.leftSide .message-body::before{*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    bottom: 0px;*/
+/*    left: -11px;*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*    clip-path: polygon(0 100%, 100% 0, 100% 100%);*/
+/*    z-index: -1;*/
+/*    background: var(--mainClr);*/
+/*}*/
+/*.right .chatBx .messages.rightSide .message-body ::before{*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    bottom: 0px;*/
+/*    right: -11px;*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*    clip-path: polygon(0 100%, 0 0, 100% 100%);*/
+/*    z-index: -1;*/
+/*    background: var(--mainClr);*/
+/*}*/
 .right .chatBx .messages .message-date{
     position: absolute;
     top: 4px;
@@ -590,12 +590,6 @@ main .box a .nameBx .mess span{
     display: none;
 }
 
-/*.message-operations {*/
-/*    position: absolute;*/
-/*    z-index: 10;*/
-/*    background-color: indianred;*/
-/*}*/
-
 .d-block {
     display: block;
 }
@@ -608,7 +602,13 @@ main .box a .nameBx .mess span{
     width: 15%;
 }
 
-/*.message-date-and-seen {*/
-/*    font-size: 12px;*/
-/*    opacity: .6;*/
-/*}*/
+.message-date-and-seen {
+    font-size: 14px;
+    opacity: .6;
+}
+
+.edit-warning {
+    position: absolute;
+    top: -60px;
+    z-index: 1;
+}

@@ -6,6 +6,8 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserBlockController;
+use App\Http\Controllers\UserController;
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -22,3 +24,6 @@ Route::post('/chats/messages/store', [MessageController::class, 'store']);
 Route::get('/chats/messages/edit', [MessageController::class, 'edit']);
 Route::post('/chats/messages/update', [MessageController::class, 'update']);
 Route::get('/chats/messages/delete', [MessageController::class, 'destroy']);
+
+Route::get('/users/delete', [UserController::class, 'destroy']);
+Route::get('/users/block', [UserBlockController::class, 'store']);

@@ -20,5 +20,9 @@ $('input[type="file"]').on('change', function() {
 $('.message-body').click(function (){
     $(this).siblings('.user-message-operations').toggleClass('d-none');
     $(this).siblings('.user-message-operations').toggleClass('d-block');
+
+    $(this).siblings('.admin-operations').toggleClass('d-none');
+    $(this).siblings('.admin-operations').toggleClass('d-block');
 });
+
 

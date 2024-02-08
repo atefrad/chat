@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Database\MysqlConnection;
 use App\Core\Database\MysqlQueryBuilder;
+use App\Core\Validations\ActiveStatus;
 use App\Core\Validations\ImageType;
 use App\Core\Validations\Max;
 use App\Core\Validations\Validation;
@@ -29,7 +30,7 @@ class MessageController
         (new LoginController)->checkLogin();
 
         $messages = $this->queryBuilder->table('messages')
-            ->select(['messages.*', 'chats.name AS chat_name', 'chats.image AS chat_image', 'users.username AS username'])
+            ->select(['messages.*', 'chats.name AS chat_name', 'chats.image AS chat_image', 'users.username AS username', 'users.status AS user_status'])
             ->join('JOIN', 'chats')
             ->on('messages.chat_id', 'chats.id')
             ->join('JOIN', 'users')
@@ -52,7 +53,8 @@ class MessageController
 
             $rules = [
                 'body' => [new Max(100)],
-                'image'=> [new ImageType]
+                'image'=> [new ImageType],
+                'status' => [new ActiveStatus]
             ];
 
             $request = array_merge(array_intersect_key($_REQUEST, $rules), $image);
@@ -62,6 +64,7 @@ class MessageController
 
             $rules = [
                 'body' => [new Max(100)],
+                'status' => [new ActiveStatus]
             ];
 
             $request = array_intersect_key($_REQUEST, $rules);
