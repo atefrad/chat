@@ -1,8 +1,11 @@
 {
-    "name": "session25/chat",
+    "name": "session26/chat-project",
+    "description": "This is a chat project with login and register",
+    "type": "project",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "App\\": "app/"
         }
     },
     "authors": [
@@ -11,5 +14,7 @@
             "email": "fa.atefrad@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "larapack/dd": "^1.1"
+    }
 }
