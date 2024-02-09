@@ -8,7 +8,6 @@ use App\Core\Validations\ActiveStatus;
 use App\Core\Validations\ImageType;
 use App\Core\Validations\Max;
 use App\Core\Validations\Validation;
-use App\Events\MessageHasBeenSeen;
 use PDO;
 
 date_default_timezone_set('Asia/Tehran');
@@ -80,7 +79,7 @@ class MessageController
                 $image = '';
             }
 
-            $this->queryBuilder->table('messages')
+             $this->queryBuilder->table('messages')
                 ->insert(['user_id', 'chat_id', 'body', 'image', 'created_at'])
                 ->execute([
                     'user_id' => $_REQUEST['user_id'],

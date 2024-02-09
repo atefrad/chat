@@ -13,10 +13,6 @@
 <body>
 <section>
     <main>
-        <!-- <div class="searchBx">
-            <i class="fal fa-search"></i>
-            <input type="text" placeholder="Search">
-        </div> -->
         <div class="box group">
             <div class="title">
                 <h2>group</h2>
@@ -49,7 +45,6 @@
 
                         <?php endif; ?>
 
-<!--                        <span>10</span>-->
                     </div>
                 </div>
             </a>

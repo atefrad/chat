@@ -98,7 +98,6 @@ $editedMessage = @$_SESSION['editedMessage'];
                 </div>
 
                 <?php endif; ?>
-<!--                <p class="message-date"></p>-->
             </div>
             <?php
                     MessageHasBeenSeen::run($message);
@@ -111,16 +110,16 @@ $editedMessage = @$_SESSION['editedMessage'];
             if(!isset($editedMessage)) {
         ?>
 
-        <form action="/chats/messages/store" method="POST" enctype="multipart/form-data">
+        <form id="message-store-form" action="/chats/messages/store" method="POST" enctype="multipart/form-data">
             <div class="inputBx">
                 <div class="input">
                     <div class="search">
-                        <input type="text" name="body" maxlength="100" placeholder="Type your message here...">
+                        <input id="body" type="text" name="body" maxlength="100" placeholder="Type your message here...">
                     </div>
 
                     <div class="inputIcon element">
                         <i class="fa-solid fa-camera camera-icon"></i><span class="name"></span>
-                        <input class="image-input" type="file" name="image">
+                        <input id="image" class="image-input" type="file" name="image">
                     </div>
                 </div>
 
@@ -129,7 +128,7 @@ $editedMessage = @$_SESSION['editedMessage'];
                 </div>
 
                 <div>
-                    <input type="hidden" name="chat_id" value="<?= $messages[0]->chat_id ?>">
+                    <input id="chat_id" type="hidden" name="chat_id" value="<?= $messages[0]->chat_id ?>">
                 </div>
 
                 <div>
@@ -198,5 +197,5 @@ $editedMessage = @$_SESSION['editedMessage'];
 </html>
 
 <?php
-unset($_SESSION['errors'], $_SESSION['editedMessage'], $message);
+unset($_SESSION['errors'], $_SESSION['editedMessage'], $editedMessage);
 ?>
