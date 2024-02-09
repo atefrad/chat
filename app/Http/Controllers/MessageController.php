@@ -11,6 +11,7 @@ use App\Core\Validations\Validation;
 use PDO;
 
 date_default_timezone_set('Asia/Tehran');
+
 class MessageController
 {
     private MysqlQueryBuilder $queryBuilder;
@@ -26,6 +27,7 @@ class MessageController
 
     public function index()
     {
+
         (new LoginController)->checkLogin();
 
         $messages = $this->queryBuilder->table('messages')
@@ -46,20 +48,19 @@ class MessageController
 
     public function store()
     {
-        if(!empty($_FILES['image']['tmp_name']))
-        {
+        if (!empty($_FILES['image']['tmp_name'])) {
             $image = ['image' => $_FILES['image']['tmp_name']];
 
             $rules = [
                 'body' => [new Max(100)],
-                'image'=> [new ImageType],
+                'image' => [new ImageType],
                 'status' => [new ActiveStatus]
             ];
 
             $request = array_merge(array_intersect_key($_REQUEST, $rules), $image);
 
 
-        }else {
+        } else {
 
             $rules = [
                 'body' => [new Max(100)],
@@ -69,17 +70,17 @@ class MessageController
             $request = array_intersect_key($_REQUEST, $rules);
         }
 
-        if(Validation::make($request,$rules)){
+        if (Validation::make($request, $rules)) {
             //store-message
 
-            if(!empty($_FILES['image']['tmp_name'])){
+            if (!empty($_FILES['image']['tmp_name'])) {
 
                 $image = (new ImageController)->store($_FILES['image']['tmp_name'], $_FILES['image']['name']);
-            }else{
+            } else {
                 $image = '';
             }
 
-             $this->queryBuilder->table('messages')
+            $this->queryBuilder->table('messages')
                 ->insert(['user_id', 'chat_id', 'body', 'image', 'created_at'])
                 ->execute([
                     'user_id' => $_REQUEST['user_id'],
@@ -98,30 +99,29 @@ class MessageController
     {
         $message = $this->queryBuilder->table('messages')
             ->select()
-            ->where('id',$_GET['id'], '=')
+            ->where('id', $_GET['id'], '=')
             ->execute()
             ->fetch();
 
         $_SESSION['editedMessage'] = $message;
 
-       header("Location: /chats/messages?id=$message->chat_id");
+        header("Location: /chats/messages?id=$message->chat_id");
     }
 
     public function update()
     {
-        if(!empty($_FILES['image']['tmp_name']))
-        {
+        if (!empty($_FILES['image']['tmp_name'])) {
             $image = ['image' => $_FILES['image']['tmp_name']];
 
             $rules = [
                 'body' => [new Max(100)],
-                'image'=> [new ImageType]
+                'image' => [new ImageType]
             ];
 
             $request = array_merge(array_intersect_key($_REQUEST, $rules), $image);
 
 
-        }else {
+        } else {
 
             $rules = [
                 'body' => [new Max(100)],
@@ -130,13 +130,13 @@ class MessageController
             $request = array_intersect_key($_REQUEST, $rules);
         }
 
-        if(Validation::make($request,$rules)){
+        if (Validation::make($request, $rules)) {
             //update message
 
-            if(!empty($_FILES['image']['tmp_name'])){
+            if (!empty($_FILES['image']['tmp_name'])) {
 
                 $image = (new ImageController)->store($_FILES['image']['tmp_name'], $_FILES['image']['name']);
-            }else{
+            } else {
                 $image = '';
             }
 
@@ -168,6 +168,76 @@ class MessageController
             ->execute();
 
         header("Location: /chats/messages?id=" . $message->chat_id);
+    }
+
+    public function ajaxStore()
+    {
+        $this->queryBuilder->table('messages')
+            ->insert(['user_id', 'chat_id', 'body', 'image', 'created_at'])
+            ->execute([
+                'user_id' => $_REQUEST['user_id'],
+                'chat_id' => $_REQUEST['chat_id'],
+                'body' => $_REQUEST['body'],
+                'image' => null,
+                'created_at' => date('Y_m_d H:i:s', time())
+            ]);
+
+        $lastId = $this->queryBuilder
+            ->table('messages')
+            ->select(['id'])
+            ->orderBy('created_at', 'DESC')
+            ->execute()
+            ->fetch()->id;
+
+        $content = $this->getMessageTemplate($_REQUEST['body']);
+
+//        header("Content-Type: application/json");
+        echo json_encode(['content' => $content, 'id' => $lastId]);
+    }
+
+    public function lastMessage()
+    {
+        $id = $_REQUEST['id'];
+
+        $lastMessage = $this->queryBuilder
+            ->table('messages')
+            ->select()
+            ->orderBy('created_at', 'DESC')
+            ->execute()
+            ->fetch();
+
+        $content = null;
+        $newMessageExists = $id != $lastMessage->id;
+
+
+        if ($newMessageExists) {
+            $content = $this->getMessageTemplate($lastMessage->body);
+        }
+
+        echo json_encode([
+            'newMessageExists' => $newMessageExists,
+            'content' => $content,
+            'id' => $lastMessage->id
+        ]);
+    }
+
+    public function getMessageTemplate($body)
+    {
+        $html = '<div class="messages rightSide">';
+        $html .= '<div class="user-message-operations w-15 d-none">';
+        $html .= '<div class="list-group">';
+        // content
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="message-body">';
+        $html .= '<div class="d-flex justify-content-between">';
+        $html .= '<h4>You</h4>';
+        $html .= '</div>';
+        $html .= '<p>' . $body . '</p>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
     }
 
 }
