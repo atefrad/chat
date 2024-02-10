@@ -27,3 +27,9 @@ Route::get('/chats/messages/delete', [MessageController::class, 'destroy']);
 
 Route::get('/users/delete', [UserController::class, 'destroy']);
 Route::get('/users/block', [UserBlockController::class, 'store']);
+<<<<<<< HEAD
+=======
+
+Route::post('/chats/ajax/store', [MessageController::class, 'ajaxStore']);
+Route::get('/chats/ajax/last', [MessageController::class, 'lastMessage']);
+>>>>>>> 9e9b44a4b6cae7ac572cc09bdd86875512d486b9
