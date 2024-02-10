@@ -15,6 +15,6 @@
         }
     ],
     "require": {
-        "larapack/dd": "^1.1"
+        "larapack/dd": "^1.1",
     }
 }

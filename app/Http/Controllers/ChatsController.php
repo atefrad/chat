@@ -10,13 +10,14 @@ class ChatsController
 {
     public function index()
     {
-        (new LoginController)->checkLogin();
 
         $connection = MysqlConnection::getInstance();
 
         $connection->setPDO(new PDO('mysql:host=localhost;dbname=chat;', 'root'));
 
         $queryBuilder = new MysqlQueryBuilder($connection);
+
+        (new LoginController)->checkLogin();
 
         $chats = $queryBuilder->table('chats')->select()->execute()->fetchAll();
 
