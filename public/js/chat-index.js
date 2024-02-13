@@ -74,21 +74,21 @@ $(document).ready(function(){
         });
     });
 
-    // setInterval(function () {
-    //     $.ajax({
-    //         url: "/chats/messages/ajax/last",
-    //         method: "GET",
-    //         data: {
-    //             id: lastId
-    //         },
-    //         success: function (response) {
-    //             const myResponse = JSON.parse(response);
-    //             console.log(myResponse);
-    //             parentBox.append(myResponse.content);
-    //             lastId = myResponse.id;
-    //         },
-    //     });
-    // }, 2000)
+    setInterval(function () {
+        $.ajax({
+            url: "/chats/messages/ajax/last",
+            method: "GET",
+            data: {
+                id: lastId
+            },
+            success: function (response) {
+                const myResponse = JSON.parse(response);
+                console.log(myResponse);
+                parentBox.append(myResponse.content);
+                lastId = myResponse.id;
+            },
+        });
+    }, 2000)
 
 
     //blocked user validation jquery

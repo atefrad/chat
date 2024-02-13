@@ -25,6 +25,8 @@ class Route implements RouteInterface
 
     public static function find(string $route, string $method = 'get')
     {
+        self::routeExists($route, $method);
+
         $foundRoute = self::$routes[$method][$route];
 
         $controller = $foundRoute[0];
@@ -32,5 +34,13 @@ class Route implements RouteInterface
         $method = $foundRoute[1];
 
         return (new $controller())->{$method}();
+    }
+
+    public static function routeExists(string $route, string $method)
+    {
+        if(!array_key_exists($route, self::$routes[$method]))
+        {
+            header("Location:/not-found");
+        }
     }
 }
