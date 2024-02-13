@@ -17,7 +17,7 @@ $errors = (new Validation)->getErrors();
 <body>
 
 <div class="container">
-    <div class="screen">
+    <div class="screen height-600px">
         <div class="screen__content">
             <form action="/login" method="POST" class="login">
                 <div class="login__field">

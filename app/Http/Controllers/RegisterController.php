@@ -23,6 +23,8 @@ class RegisterController
 
     public function store()
     {
+        global $queryBuilder;
+
         if(Validation::make($_REQUEST, [
             'username' => [new Required,new Unique, new Min(3), new Max(32), new RegularExpression("/^[a-zA-Z0-9_]+$/")],
             'email' => [new Required,new Unique, new Email],
@@ -31,12 +33,6 @@ class RegisterController
             'password_confirmation' => [new Required, new Confirmed],
         ]))
         {
-            $connection = MysqlConnection::getInstance();
-
-            $connection->setPDO(new PDO('mysql:host=localhost;dbname=chat;', 'root'));
-
-            $queryBuilder = new MysqlQueryBuilder($connection);
-
             $queryBuilder->table('users')
                 ->insert(['username', 'email', 'name', 'password'])
                 ->execute([
@@ -49,6 +45,9 @@ class RegisterController
             header("Location: /login-form");
 
         }else{
+
+            $_SESSION['old'] = $_REQUEST;
+
             header("Location: /register-form");
         }
 

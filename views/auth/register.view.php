@@ -16,24 +16,24 @@ $errors = (new Validation)->getErrors();
 </head>
 <body>
 <div class="container">
-    <div class="screen">
+    <div class="screen height-650px">
         <div class="screen__content">
             <form action="/register" method="POST" class="register">
                 <div class="register__field">
                     <i class="register__icon fa-solid fa-user"></i>
-                    <input type="text" name="username" class="login__input" placeholder="Username">
+                    <input type="text" name="username" class="login__input" placeholder="Username" value="<?= $_SESSION['old']['username'] ?? '' ?>">
                     <span class="validation-error"><?= $errors['username'] ?? '' ?></span>
                 </div>
 
                 <div class="register__field">
                     <i class="register__icon fa-solid fa-envelope"></i>
-                    <input type="email" name="email" class="login__input" placeholder="Email">
+                    <input type="email" name="email" class="login__input" placeholder="Email" value="<?= $_SESSION['old']['email'] ?? '' ?>">
                     <span class="validation-error"><?= $errors['email'] ?? '' ?></span>
                 </div>
 
                 <div class="register__field">
                     <i class="register__icon fa-solid fa-circle-user"></i>
-                    <input type="name" name="name" class="login__input" placeholder="Name">
+                    <input type="name" name="name" class="login__input" placeholder="Name" value="<?= $_SESSION['old']['name'] ?? '' ?>">
                     <span class="validation-error"><?= $errors['name'] ?? '' ?></span>
                 </div>
 
@@ -75,5 +75,5 @@ $errors = (new Validation)->getErrors();
 </html>
 
 <?php
-unset($_SESSION['errors']);
+unset($_SESSION['errors'], $_SESSION['old']);
 ?>

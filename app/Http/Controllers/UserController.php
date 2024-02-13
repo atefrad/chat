@@ -12,11 +12,9 @@ class UserController
 
     public function __construct()
     {
-        $connection = MysqlConnection::getInstance();
+        global $queryBuilder;
 
-        $connection->setPDO(new PDO('mysql:host=localhost;dbname=chat;', 'root'));
-
-        $this->queryBuilder = new MysqlQueryBuilder($connection);
+        $this->queryBuilder = $queryBuilder;
     }
 
     public function destroy()

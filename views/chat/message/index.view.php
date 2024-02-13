@@ -2,14 +2,17 @@
 
 use App\Core\Validations\Validation;
 use App\Events\MessageHasBeenSeen;
+use Morilog\Jalali\Jalalian;
 
-$errors = (new Validation)->getErrors();
+//$errors = (new Validation)->getErrors();
 
 $user = $_SESSION['user'];
 
 $messages = @$_SESSION['messages'];
 
-$editedMessage = @$_SESSION['editedMessage'];
+//$editedMessage = @$_SESSION['editedMessage'];
+
+$lastId = 1;
 
 ?>
 
@@ -21,7 +24,7 @@ $editedMessage = @$_SESSION['editedMessage'];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../../public/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../../../public/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="../../../public/css/chat-styles.css">
 </head>
@@ -31,18 +34,26 @@ $editedMessage = @$_SESSION['editedMessage'];
     <div class="right">
         <header>
             <div class="imgBx">
-                <img src="<?= $messages[0]->chat_image ?>" alt="chat_image">
+                <img src="<?= $chat->image ?>" alt="chat_image">
             </div>
             <div class="title">
-                <h2><?= $messages[0]->chat_name ?></h2>
+                <h2><?= $chat->name ?></h2>
             </div>
-
+            <div class="headIconBx">
+                <a href="/logout">
+                    Logout
+                </a>
+                <a href="/chats">
+                    Chat Groups
+                </a>
+            </div>
         </header>
-        <div class="chatBx">
+        <div id="parent-box" class="chatBx">
 
             <?php
                 if(!empty($messages)):
                     foreach ($messages as $message):
+                        $lastId = $message->id;
             ?>
 
             <div class="messages <?= $user->id == $message->user_id ? 'rightSide' : 'leftSide' ?>">
@@ -52,14 +63,15 @@ $editedMessage = @$_SESSION['editedMessage'];
                 <div class="user-message-operations w-15 d-none">
                     <div class="list-group">
 <!--                        <a href="#" class="list-group-item list-group-item-action">Reply</a>-->
-                        <a href="/chats/messages/edit?id=<?= $message->id ?>" class="list-group-item list-group-item-action">Edit Message</a>
-                        <a href="/chats/messages/delete?id=<?= $message->id ?>" class="list-group-item list-group-item-action">Delete Message</a>
+                        <a href="/chats/messages/edit?id=<?= $message->id ?>" class="list-group-item list-group-item-action edit-link">Edit Message</a>
+                        <a href="/chats/messages/delete?id=<?= $message->id ?>" class="list-group-item list-group-item-action delete-link">Delete Message</a>
                     </div>
                 </div>
 
                 <?php endif; ?>
 
                 <div class="message-body">
+                    <span class="d-none message-id-span"><?= $lastId ?></span>
                     <div class="d-flex justify-content-between">
                         <h4><?= $message->user_id !== $user->id ? $message->username : 'You' ?></h4>
                         <?php if($message->user_status == 0): ?>
@@ -67,13 +79,12 @@ $editedMessage = @$_SESSION['editedMessage'];
                         <?php endif; ?>
                     </div>
 
-                    <p><?= $message->body ?? '' ?></p>
+                    <p class="p-body"><?= $message->body ?? '' ?></p>
                     <?php if(!empty($message->image)): ?>
                     <img src="<?= $message->image ?>">
                     <?php endif; ?>
                      <p class="message-date-and-seen">
-                         <?= $message->created_at ?>
-
+                         <?= Jalalian::forge($message->created_at)->format('Y-m-d H:i') ?>
                          <?php
                          if($user->id === $message->user_id) {
                              if($message->seen == 0){
@@ -106,9 +117,9 @@ $editedMessage = @$_SESSION['editedMessage'];
             ?>
         </div>
 
-        <?php
-            if(!isset($editedMessage)) {
-        ?>
+<!--        --><?php
+//            if(!isset($editedMessage)) {
+//        ?>
 
         <form id="message-store-form" action="/chats/messages/store" method="POST" enctype="multipart/form-data">
             <div class="inputBx">
@@ -118,54 +129,56 @@ $editedMessage = @$_SESSION['editedMessage'];
                     </div>
 
                     <div class="inputIcon element">
-                        <i class="fa-solid fa-camera camera-icon"></i><span class="name"></span>
+                        <i class="fa-solid fa-camera camera-icon"></i><span id="image-path" class="name"></span>
                         <input id="image" class="image-input" type="file" name="image">
                     </div>
                 </div>
 
                 <div>
-                    <input type="hidden" name="user_id" value="<?= $user->id ?>">
+                    <input id="user_id" type="hidden" name="user_id" value="<?= $user->id ?>">
                 </div>
 
                 <div>
-                    <input id="chat_id" type="hidden" name="chat_id" value="<?= $messages[0]->chat_id ?>">
+                    <input id="chat_id" type="hidden" name="chat_id" value="<?= $chat->id ?>">
                 </div>
 
                 <div>
-                    <input type="hidden" name="status" value="<?= $user->status ?>">
+                    <input id="user_status" type="hidden" name="status" value="<?= $user->status ?>">
                 </div>
 
-                <button class="mic" type="submit">
+                <button id="store-button" class="mic" type="submit">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </form>
 
-        <span class="validation-error"><?= $errors['body'] ?? '' ?></span>
-        <span class="validation-error"><?= $errors['image'] ?? '' ?></span>
-        <span class="validation-error"><?= $errors['status'] ?? '' ?></span>
+        <span id="body-error" class="validation-error"><?= $errors['body'] ?? '' ?></span>
+        <span id="image-error" class="validation-error"><?= $errors['image'] ?? '' ?></span>
+        <span id="status-error" class="validation-error"><?= $errors['status'] ?? '' ?></span>
 
-        <?php
-            }else{
-        ?>
-                <form action="/chats/messages/update?id=<?= $editedMessage->id ?>" method="POST" enctype="multipart/form-data">
+<!--        --><?php
+//            }else{
+//        ?>
+                <form class="d-none" id="message-update-form" action="" method="POST" enctype="multipart/form-data">
                     <div class="inputBx">
                         <div class="input">
                             <div class="search">
                                 <div class="alert alert-warning edit-warning">
-                                    <a href="/chats/messages?id=<?= $editedMessage->chat_id ?>" class="alert-link"><i class="fa-solid fa-xmark p-0 m-0 text-danger"></i></a>
+                                    <a href="/chats/messages?id=<?= $messages[0]->chat_id ?>" class="alert-link"><i class="fa-solid fa-xmark p-0 m-0 text-danger"></i></a>
                                     editing message
                                 </div>
-                                <input type="text" name="body" maxlength="100"
-                                       value="<?= $editedMessage->body ?? '' ?>">
+                                <input id="update-body" type="text" name="body" maxlength="100"
+                                       value="">
                             </div>
-
-
 
                             <div class="inputIcon element">
-                                <i class="fa-solid fa-camera camera-icon"></i><span class="name"></span>
+                                <i class="fa-solid fa-camera camera-icon"></i><span id="update-image-path" class="name"></span>
                                 <input class="image-input" type="file" name="image">
                             </div>
+                        </div>
+
+                        <div>
+                            <input id="edited-message-id" type="hidden" name="id">
                         </div>
 
                         <div>
@@ -173,19 +186,24 @@ $editedMessage = @$_SESSION['editedMessage'];
                         </div>
 
                         <div>
-                            <input type="hidden" name="chat_id" value="<?= $editedMessage->chat_id ?>">
+                            <input type="hidden" name="chat_id" value="<?= $messages[0]->chat_id ?>">
                         </div>
 
-                        <button class="mic" type="submit">
+                        <div>
+                            <input type="hidden" name="status" value="<?= $user->status ?>">
+                        </div>
+
+                        <button id="update-button" class="mic" type="submit">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
                 </form>
 
-                <span class="validation-error"><?= $errors['body'] ?? '' ?></span>
-                <span class="validation-error"><?= $errors['image'] ?? '' ?></span>
+                <span id="update-body-error" class="validation-error"><?= $errors['body'] ?? '' ?></span>
+                <span id="update-image-error" class="validation-error"><?= $errors['image'] ?? '' ?></span>
+                <span id="update-status-error" class="validation-error"><?= $errors['status'] ?? '' ?></span>
 
-                <?php } ?>
+<!--                --><?php //} ?>
 
 
     </div>
@@ -193,6 +211,7 @@ $editedMessage = @$_SESSION['editedMessage'];
 
 <script src="../../../public/js/jquery-3.7.1.min.js"></script>
 <script src="../../../public/js/chat-index.js"></script>
+
 </body>
 </html>
 

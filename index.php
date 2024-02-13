@@ -4,6 +4,7 @@ session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/routes.php';
+require_once __DIR__ . '/config.php';
 
 use App\Core\Routing\Route;
 

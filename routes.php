@@ -17,6 +17,7 @@ Route::post('/register', [RegisterController::class, 'store']);
 
 Route::get('/login-form', [LoginController::class, 'create']);
 Route::post('/login', [LoginController::class, 'store']);
+Route::get('/logout', [LoginController::class, 'logout']);
 
 Route::get('/chats', [ChatsController::class, 'index']);
 Route::get('/chats/messages', [MessageController::class, 'index']);
@@ -27,3 +28,10 @@ Route::get('/chats/messages/delete', [MessageController::class, 'destroy']);
 
 Route::get('/users/delete', [UserController::class, 'destroy']);
 Route::get('/users/block', [UserBlockController::class, 'store']);
+
+//messages-ajax
+Route::post('/chats/messages/ajax/store', [MessageController::class, 'ajaxStore']);
+Route::get('/chats/messages/ajax/last', [MessageController::class, 'lastMessage']);
+Route::get('/chats/messages/ajax/edit', [MessageController::class, 'ajaxEdit']);
+Route::post('/chats/messages/ajax/update', [MessageController::class, 'ajaxUpdate']);
+Route::post('/chats/messages/ajax/delete', [MessageController::class, 'ajaxDestroy']);

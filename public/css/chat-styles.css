@@ -264,8 +264,9 @@ main .box a .nameBx .mess span{
     margin-left: 25px;
     text-decoration: none;
 }
-.right header .headIconBx a i{
-    font-size: 1.2rem;
+.right header .headIconBx a {
+    /*font-size: 1.2rem;*/
+    font-weight: bold;
     color: var(--bgClr);
 }
 .right .chatBx{

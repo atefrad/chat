@@ -14,11 +14,9 @@ class LoginController
 
     public function __construct()
     {
-        $connection = MysqlConnection::getInstance();
+        global $queryBuilder;
 
-        $connection->setPDO(new PDO('mysql:host=localhost;dbname=chat;', 'root'));
-
-        $this->queryBuilder = new MysqlQueryBuilder($connection);
+        $this->queryBuilder = $queryBuilder;
     }
 
     public function create(): void
@@ -74,5 +72,14 @@ class LoginController
         {
             header("Location: /login-form");
         }
+    }
+
+    public function logout()
+    {
+        unset($_SESSION['user']);
+
+        setcookie('user_id', '', time() - 10);
+
+        header("Location: /login-form");
     }
 }
