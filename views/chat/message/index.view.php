@@ -54,6 +54,10 @@ $lastId = 1;
                 if(!empty($messages)):
                     foreach ($messages as $message):
                         $lastId = $message->id;
+
+                        if($user->id === $message->user_id && $message->seen === 1)
+
+                        $userLastSeenMessageId = $message->id;
             ?>
 
             <div class="messages <?= $user->id == $message->user_id ? 'rightSide' : 'leftSide' ?>">
@@ -89,7 +93,7 @@ $lastId = 1;
                          if($user->id === $message->user_id) {
                              if($message->seen == 0){
                          ?>
-                         <i class="fa-solid fa-check"></i>
+                         <i class="seen-icon fa-solid fa-check"></i>
                                  <?php }else{ ?>
                          <i class="fa-solid fa-check-double"></i>
                          <?php
@@ -111,11 +115,15 @@ $lastId = 1;
                 <?php endif; ?>
             </div>
             <?php
-                    MessageHasBeenSeen::run($message);
+//                    MessageHasBeenSeen::run($message);
                     endforeach;
                 endif;
             ?>
+
         </div>
+
+        <input id="last_id" type="hidden" name="last_id" value="<?= $lastId ?>">
+        <input id="last_seen_id" type="hidden" name="last_seen_id" value="<?= $userLastSeenMessageId ?? 0 ?>">
 
 <!--        --><?php
 //            if(!isset($editedMessage)) {
@@ -205,7 +213,6 @@ $lastId = 1;
 
 <!--                --><?php //} ?>
 
-
     </div>
 </section>
 
@@ -216,5 +223,5 @@ $lastId = 1;
 </html>
 
 <?php
-unset($_SESSION['errors'], $_SESSION['editedMessage'], $editedMessage);
+//unset($_SESSION['errors'], $_SESSION['editedMessage'], $editedMessage);
 ?>

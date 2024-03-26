@@ -9,6 +9,7 @@ use App\Core\Validations\ImageType;
 use App\Core\Validations\Max;
 use App\Core\Validations\Required;
 use App\Core\Validations\Validation;
+use App\Events\MessageHasBeenSeen;
 use Morilog\Jalali\Jalalian;
 use PDO;
 
@@ -247,6 +248,7 @@ class MessageController
             ->select(['messages.*', 'users.username AS username', 'users.status AS user_status'])
             ->join('JOIN', 'users')
             ->on('messages.user_id', 'users.id')
+            ->where('chat_id', $_REQUEST['chat_id'] , '=')
             ->orderBy('created_at', 'DESC')
             ->execute()
             ->fetch();
@@ -357,7 +359,6 @@ class MessageController
 
                 <div class="user-message-operations w-15 d-none">
                     <div class="list-group">
-                        <!--                        <a href="#" class="list-group-item list-group-item-action">Reply</a>-->
                         <a href="/chats/messages/edit?id=<?= $message->id ?>" class="list-group-item list-group-item-action">Edit Message</a>
                         <a href="/chats/messages/delete?id=<?= $message->id ?>" class="list-group-item list-group-item-action">Delete Message</a>
                     </div>
@@ -366,7 +367,7 @@ class MessageController
             <?php endif; ?>
 
             <div class="message-body">
-                <span id="message-id-span" class="d-none"><?= $message->id ?></span>
+                <span class="d-none message-id-span"><?= $message->id ?></span>
                 <div class="d-flex justify-content-between">
                     <h4><?= $message->user_id !== $user->id ? $message->username : 'You' ?></h4>
                     <?php if($message->user_status == 0): ?>
@@ -383,14 +384,10 @@ class MessageController
 
                     <?php
                     if($user->id === $message->user_id) {
-                        if($message->seen == 0){
                             ?>
-                            <i class="fa-solid fa-check"></i>
-                        <?php }else{ ?>
-                            <i class="fa-solid fa-check-double"></i>
+                            <i class="seen-icon fa-solid fa-check"></i>
                             <?php
                         }
-                    }
                     ?>
                 </p>
             </div>
@@ -408,6 +405,51 @@ class MessageController
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    public function ajaxSeen()
+    {
+        $user_id = $_SESSION['user']->id;
+        $chat_id = $_REQUEST['chat_id'];
+        $last_seen_id = $_REQUEST['last_seen_id'];
+
+        $unSeenMessages = $this->queryBuilder
+            ->table('messages')
+            ->select()
+            ->where('chat_id', $chat_id, '=')
+            ->where('seen', '0', '=')
+            ->where('user_id', $user_id, '<>')
+            ->execute()
+            ->fetchAll();
+
+        $userSeenMessages = $this->queryBuilder
+            ->table('messages')
+            ->select()
+            ->where('seen', '1', '=')
+            ->where('user_id', $user_id, '=')
+            ->where('id', $last_seen_id, '>')
+            ->execute()
+            ->fetchAll();
+
+        $unSeenMessagesId = array_map(function ($unSeenMessage) {
+
+            return $unSeenMessage->id;
+
+        },$unSeenMessages);
+
+        $userSeenMessagesId = array_map(function ($userSeenMessage) {
+
+            return $userSeenMessage->id;
+        }, $userSeenMessages);
+
+      if($unSeenMessagesId)
+       {
+        MessageHasBeenSeen::ajaxRun($unSeenMessagesId);
+
+      }
+
+       echo json_encode(['content' => $userSeenMessagesId]);
+
     }
 
 }

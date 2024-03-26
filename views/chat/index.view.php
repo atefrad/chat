@@ -14,11 +14,14 @@
 <section>
     <main>
         <div class="box group">
-            <div class="title">
-                <h2>group</h2>
+            <div class="d-flex justify-content-between pb-10">
+                <div class="title">
+                    <h2>Groups</h2>
+                </div>
+                <div>
+                    <a class="logout-link" href="/logout">Logout</a>
+                </div>
             </div>
-
-
             <?php
 
             use Morilog\Jalali\Jalalian;
@@ -33,7 +36,7 @@
                             }
                         }
             ?>
-            <a href="/chats/messages?id=<?= $chat->id?>">
+            <a class="chat-group-list" href="/chats/messages?id=<?= $chat->id?>">
                 <img src="<?= $chat->image ?>" alt="theAvengers">
                 <div class="nameBx">
                     <div class="name">

@@ -8,7 +8,7 @@ $(document).ready(function(){
         $(this).siblings('span').text(val);
     })
 
-    $('.message-body').click(function (){
+    $(document).on('click', '.message-body', function(){
         $(this).siblings('.user-message-operations').toggleClass('d-none');
         $(this).siblings('.user-message-operations').toggleClass('d-block');
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
     const chatBox = $('#body');
     const imagePath = $('#image-path');
     const parentBox = $('#parent-box');
-    var lastId = parseInt($('.message-id-span').text());
+    var lastId = $('#last_id').val();
     const bodyError = $('#body-error');
     const imageError = $('#image-error');
     const statusError = $('#status-error');
@@ -34,6 +34,7 @@ $(document).ready(function(){
     const updateForm = $('#message-update-form');
 
 
+    //ajax for storing a message
     storeForm.submit(function (e) {
         e.preventDefault();
 
@@ -51,8 +52,8 @@ $(document).ready(function(){
 
                 if(myResponse.message === 'success')
                 {
-                    parentBox.append(myResponse.content);
                     lastId = myResponse.id;
+                    parentBox.append(myResponse.content);
 
                 }else{
 
@@ -74,21 +75,22 @@ $(document).ready(function(){
         });
     });
 
+    //ajax for getting the last message
     setInterval(function () {
         $.ajax({
             url: "/chats/messages/ajax/last",
             method: "GET",
             data: {
-                id: lastId
+                id: lastId,
+                chat_id: $('#chat_id').val()
             },
             success: function (response) {
                 const myResponse = JSON.parse(response);
-                console.log(myResponse);
                 parentBox.append(myResponse.content);
                 lastId = myResponse.id;
             },
         });
-    }, 2000)
+    }, 3000)
 
 
     //blocked user validation jquery
@@ -235,6 +237,41 @@ $(document).ready(function(){
         }
 
     });
+
+    //ajax seen
+    var last_seen_id = $('#last_seen_id').val();
+
+    setInterval(function () {
+
+        $.ajax({
+            url: "/chats/messages/ajax/seen-messages",
+            method: "GET",
+            data:{
+                    chat_id: $('#chat_id').val(),
+                    last_seen_id: last_seen_id
+                },
+            success: function (response) {
+                const myResponse = JSON.parse(response);
+                if(myResponse.content.length !== 0)
+                {
+                    last_seen_id = myResponse.content[ myResponse.content.length - 1];
+                }
+
+
+                $('.message-body').each( function () {
+
+                    const messageId = parseInt($(this).children('.message-id-span').text());
+
+                        if((jQuery.inArray(messageId, myResponse.content) !== -1 ))
+                        {
+                            $(this).children('.message-date-and-seen').children('.seen-icon').removeClass('fa-check');
+                            $(this).children('.message-date-and-seen').children('.seen-icon').addClass('fa-check-double');
+                        }
+                });
+            }
+        });
+    },3000)
+
 });
 
 
