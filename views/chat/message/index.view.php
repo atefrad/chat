@@ -85,7 +85,7 @@ $lastId = 1;
 
                     <p class="p-body"><?= $message->body ?? '' ?></p>
                     <?php if(!empty($message->image)): ?>
-                    <img src="<?= $message->image ?>">
+                    <img class="pb-3" src="<?= $message->image ?>">
                     <?php endif; ?>
                      <p class="message-date-and-seen">
                          <?= Jalalian::forge($message->created_at)->format('Y-m-d H:i') ?>
