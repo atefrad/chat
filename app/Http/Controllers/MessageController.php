@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Database\MysqlConnection;
 use App\Core\Database\MysqlQueryBuilder;
 use App\Core\Validations\ActiveStatus;
 use App\Core\Validations\ImageType;
@@ -11,10 +10,8 @@ use App\Core\Validations\Required;
 use App\Core\Validations\Validation;
 use App\Events\MessageHasBeenSeen;
 use Morilog\Jalali\Jalalian;
-use PDO;
 
 date_default_timezone_set('Asia/Tehran');
-
 class MessageController
 {
     private MysqlQueryBuilder $queryBuilder;
@@ -28,7 +25,6 @@ class MessageController
 
     public function index()
     {
-
         (new LoginController)->checkLogin();
 
         $messages = $this->queryBuilder->table('messages')
@@ -53,23 +49,20 @@ class MessageController
 
     public function store()
     {
-        if (!empty($_FILES['image']['tmp_name'])) {
+        if(!empty($_FILES['image']['tmp_name']))
+        {
             $image = ['image' => $_FILES['image']['tmp_name']];
 
             $rules = [
                 'body' => [new Max(100)],
-<<<<<<< HEAD
                 'image'=> [new ImageType],
-=======
-                'image' => [new ImageType],
->>>>>>> 9e9b44a4b6cae7ac572cc09bdd86875512d486b9
                 'status' => [new ActiveStatus]
             ];
 
             $request = array_merge(array_intersect_key($_REQUEST, $rules), $image);
 
 
-        } else {
+        }else {
 
             $rules = [
                 'body' => [new Required, new Max(100)],
@@ -79,17 +72,17 @@ class MessageController
             $request = array_intersect_key($_REQUEST, $rules);
         }
 
-        if (Validation::make($request, $rules)) {
+        if(Validation::make($request,$rules)){
             //store-message
 
-            if (!empty($_FILES['image']['tmp_name'])) {
+            if(!empty($_FILES['image']['tmp_name'])){
 
                 $image = (new ImageController)->store($_FILES['image']['tmp_name'], $_FILES['image']['name']);
-            } else {
+            }else{
                 $image = '';
             }
 
-             $this->queryBuilder->table('messages')
+            $this->queryBuilder->table('messages')
                 ->insert(['user_id', 'chat_id', 'body', 'image', 'created_at'])
                 ->execute([
                     'user_id' => $_REQUEST['user_id'],
@@ -108,7 +101,7 @@ class MessageController
     {
         $message = $this->queryBuilder->table('messages')
             ->select()
-            ->where('id', $_GET['id'], '=')
+            ->where('id',$_GET['id'], '=')
             ->execute()
             ->fetch();
 
@@ -119,23 +112,20 @@ class MessageController
 
     public function update()
     {
-        if (!empty($_FILES['image']['tmp_name'])) {
+        if(!empty($_FILES['image']['tmp_name']))
+        {
             $image = ['image' => $_FILES['image']['tmp_name']];
 
             $rules = [
                 'body' => [new Max(100)],
-<<<<<<< HEAD
-                'image' => [new ImageType]
-=======
                 'image'=> [new ImageType],
                 'status' => [new ActiveStatus]
->>>>>>> development
             ];
 
             $request = array_merge(array_intersect_key($_REQUEST, $rules), $image);
 
 
-        } else {
+        }else {
 
             $rules = [
                 'body' => [new Required, new Max(100)],
@@ -145,13 +135,13 @@ class MessageController
             $request = array_intersect_key($_REQUEST, $rules);
         }
 
-        if (Validation::make($request, $rules)) {
+        if(Validation::make($request,$rules)){
             //update message
 
-            if (!empty($_FILES['image']['tmp_name'])) {
+            if(!empty($_FILES['image']['tmp_name'])){
 
                 $image = (new ImageController)->store($_FILES['image']['tmp_name'], $_FILES['image']['name']);
-            } else {
+            }else{
                 $image = '';
             }
 
@@ -187,29 +177,6 @@ class MessageController
 
     public function ajaxStore()
     {
-<<<<<<< HEAD
-        $this->queryBuilder->table('messages')
-            ->insert(['user_id', 'chat_id', 'body', 'image', 'created_at'])
-            ->execute([
-                'user_id' => $_REQUEST['user_id'],
-                'chat_id' => $_REQUEST['chat_id'],
-                'body' => $_REQUEST['body'],
-                'image' => null,
-                'created_at' => date('Y_m_d H:i:s', time())
-            ]);
-
-        $lastId = $this->queryBuilder
-            ->table('messages')
-            ->select(['id'])
-            ->orderBy('created_at', 'DESC')
-            ->execute()
-            ->fetch()->id;
-
-        $content = $this->getMessageTemplate($_REQUEST['body']);
-
-//        header("Content-Type: application/json");
-        echo json_encode(['content' => $content, 'id' => $lastId]);
-=======
         if(!empty($_FILES['image']['tmp_name']))
         {
             $image = ['image' => $_FILES['image']['tmp_name']];
@@ -269,62 +236,21 @@ class MessageController
 
             echo json_encode(array_merge(['message' => 'fail'], ['errors' => (new Validation())->getErrors()]));
         }
->>>>>>> development
     }
 
     public function lastMessage()
     {
         $id = $_REQUEST['id'];
 
-<<<<<<< HEAD
-        $lastMessage = $this->queryBuilder
-            ->table('messages')
-            ->select()
-=======
         $lastMessage = $this->queryBuilder->table('messages')
             ->select(['messages.*', 'users.username AS username', 'users.status AS user_status'])
             ->join('JOIN', 'users')
             ->on('messages.user_id', 'users.id')
             ->where('chat_id', $_REQUEST['chat_id'] , '=')
->>>>>>> development
             ->orderBy('created_at', 'DESC')
             ->execute()
             ->fetch();
 
-<<<<<<< HEAD
-        $content = null;
-        $newMessageExists = $id != $lastMessage->id;
-
-
-        if ($newMessageExists) {
-            $content = $this->getMessageTemplate($lastMessage->body);
-        }
-
-        echo json_encode([
-            'newMessageExists' => $newMessageExists,
-            'content' => $content,
-            'id' => $lastMessage->id
-        ]);
-    }
-
-    public function getMessageTemplate($body)
-    {
-        $html = '<div class="messages rightSide">';
-        $html .= '<div class="user-message-operations w-15 d-none">';
-        $html .= '<div class="list-group">';
-        // content
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '<div class="message-body">';
-        $html .= '<div class="d-flex justify-content-between">';
-        $html .= '<h4>You</h4>';
-        $html .= '</div>';
-        $html .= '<p>' . $body . '</p>';
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
-=======
         $newMessageExists = $id != $lastMessage->id;
 
         $content = null;
@@ -335,9 +261,9 @@ class MessageController
         }
 
         echo json_encode([
-                'newMessageExists' => $newMessageExists,
-                'content' => $content,
-                'id' => $lastMessage->id
+            'newMessageExists' => $newMessageExists,
+            'content' => $content,
+            'id' => $lastMessage->id
         ]);
     }
 
@@ -398,10 +324,10 @@ class MessageController
 
 
             $updatedMessage = $this->queryBuilder->table('messages')
-            ->select()
-            ->where('id', $_REQUEST['id'], '=')
-            ->execute()
-            ->fetch();
+                ->select()
+                ->where('id', $_REQUEST['id'], '=')
+                ->execute()
+                ->fetch();
 
             echo json_encode(['message' => 'success' ,'content' => $updatedMessage]);
 
@@ -456,10 +382,10 @@ class MessageController
 
                     <?php
                     if($user->id === $message->user_id) {
-                            ?>
-                            <i class="seen-icon fa-solid fa-check"></i>
-                            <?php
-                        }
+                        ?>
+                        <i class="seen-icon fa-solid fa-check"></i>
+                        <?php
+                    }
                     ?>
                 </p>
             </div>
@@ -514,15 +440,14 @@ class MessageController
             return $userSeenMessage->id;
         }, $userSeenMessages);
 
-      if($unSeenMessagesId)
-       {
-        MessageHasBeenSeen::ajaxRun($unSeenMessagesId);
+        if($unSeenMessagesId)
+        {
+            MessageHasBeenSeen::ajaxRun($unSeenMessagesId);
 
-      }
+        }
 
-       echo json_encode(['content' => $userSeenMessagesId]);
+        echo json_encode(['content' => $userSeenMessagesId]);
 
->>>>>>> development
     }
 
 }
