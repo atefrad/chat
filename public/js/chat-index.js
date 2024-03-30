@@ -17,10 +17,15 @@ $(document).ready(function(){
     });
 
 //scroll to the bottom of the chat box
-    $('.chatBx').animate({
-        scrollTop: $ ('.chatBx') .offset().top + $('.chatBx')[0].scrollHeight
-    }, 0.01);
+    function scrollToTheBottom()
+    {
+        const chatBox =  $('.chatBx');
+        chatBox.animate({
+            scrollTop: chatBox .offset().top + chatBox[0].scrollHeight
+        }, 0.01);
+    }
 
+    scrollToTheBottom();
 
 //ajax for storing messages
     const chatBox = $('#body');
@@ -54,6 +59,9 @@ $(document).ready(function(){
                 {
                     lastId = myResponse.id;
                     parentBox.append(myResponse.content);
+
+                    //scroll to the bottom of the chat box
+                    scrollToTheBottom();
 
                 }else{
 
@@ -270,7 +278,7 @@ $(document).ready(function(){
                 });
             }
         });
-    },3000)
+    },1000)
 
 });
 
