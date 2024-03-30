@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Database\MysqlConnection;
 use App\Core\Database\MysqlQueryBuilder;
-use PDO;
 
 class UserController
 {

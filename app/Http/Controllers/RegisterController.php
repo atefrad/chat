@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Database\MysqlConnection;
-use App\Core\Database\MysqlQueryBuilder;
 use App\Core\Validations\Confirmed;
 use App\Core\Validations\Email;
 use App\Core\Validations\Max;
@@ -12,7 +10,6 @@ use App\Core\Validations\RegularExpression;
 use App\Core\Validations\Required;
 use App\Core\Validations\Unique;
 use App\Core\Validations\Validation;
-use PDO;
 
 class RegisterController
 {

@@ -33,14 +33,6 @@ Route::get('/chats/messages/delete', [MessageController::class, 'destroy']);
 //users
 Route::get('/users/delete', [UserController::class, 'destroy']);
 Route::get('/users/block', [UserBlockController::class, 'store']);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-Route::post('/chats/ajax/store', [MessageController::class, 'ajaxStore']);
-Route::get('/chats/ajax/last', [MessageController::class, 'lastMessage']);
->>>>>>> 9e9b44a4b6cae7ac572cc09bdd86875512d486b9
-=======
 
 //messages-ajax
 Route::post('/chats/messages/ajax/store', [MessageController::class, 'ajaxStore']);
@@ -52,4 +44,4 @@ Route::get('/chats/messages/ajax/seen-messages', [MessageController::class, 'aja
 
 //not found
 Route::get('/not-found', [ErrorController::class, 'index']);
->>>>>>> development
+
