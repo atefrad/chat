@@ -118,7 +118,16 @@ class MysqlQueryBuilder implements QueryBuilderInterface
             $this->query .= ' AND';
         }
 
-        $pattern = " $column $operation '$value'";
+        if($operation == 'IN')
+        {
+            $pattern = " $column $operation $value";
+
+        }else{
+
+            $pattern = " $column $operation '$value'";
+        }
+
+
 
         $this->query .= $pattern;
 

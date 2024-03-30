@@ -6,7 +6,7 @@ use App\Core\Validations\Contracts\ValidationInterface;
 
 class Validation implements ValidationInterface
 {
-    private static ?array $errors;
+    private static ?array $errors = null;
 
     public static function make(array $request, array $rules)
     {
@@ -19,23 +19,26 @@ class Validation implements ValidationInterface
             {
                 if(!$rule->validate($key, $value))
                 {
-//                    self::$errors[$key] = $rule->message($key);
-                    $_SESSION['errors'][$key] = $rule->message($key);
+                    self::$errors[$key] = $rule->message($key);
+//                    $_SESSION['errors'][$key] = $rule->message($key);
                     break;
                 }
             }
         }
 
-        return !isset($_SESSION['errors']);
+//        return !isset($_SESSION['errors']);
+        return is_null(self::$errors);
 
 
     }
 
     public function getErrors()
     {
-        if(isset($_SESSION['errors']))
-        {
-            return $_SESSION['errors'];
-        }
+//        if(isset($_SESSION['errors']))
+//        {
+//            return $_SESSION['errors'];
+//        }
+
+        return self::$errors;
     }
 }

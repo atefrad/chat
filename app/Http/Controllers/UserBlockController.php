@@ -10,11 +10,7 @@ class UserBlockController
 {
     public function store()
     {
-        $connection = MysqlConnection::getInstance();
-
-        $connection->setPDO(new PDO('mysql:host=localhost;dbname=chat;', 'root'));
-
-        $queryBuilder = new MysqlQueryBuilder($connection);
+        global $queryBuilder;
 
         $queryBuilder->table('users')
             ->update(['status'])

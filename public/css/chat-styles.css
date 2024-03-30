@@ -264,8 +264,9 @@ main .box a .nameBx .mess span{
     margin-left: 25px;
     text-decoration: none;
 }
-.right header .headIconBx a i{
-    font-size: 1.2rem;
+.right header .headIconBx a {
+    /*font-size: 1.2rem;*/
+    font-weight: bold;
     color: var(--bgClr);
 }
 .right .chatBx{
@@ -432,4 +433,32 @@ main .box a .nameBx .mess span{
     position: absolute;
     top: -60px;
     z-index: 1;
+}
+
+.logout-link {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border: none !important;
+    height: auto !important;
+    width: auto !important;
+    transition: .2s ease;
+    font-weight: bold;
+    color:var(--bgClr)
+}
+
+.logout-link:hover {
+    background: white !important;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.pb-10 {
+    padding-bottom: 10px;
 }

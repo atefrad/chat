@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Page</title>
+    <title>Chat Groups</title>
     <link rel="stylesheet" href="../../public/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="../../public/css/chat-styles.css">
 </head>
@@ -14,12 +14,19 @@
 <section>
     <main>
         <div class="box group">
-            <div class="title">
-                <h2>group</h2>
+            <div class="d-flex justify-content-between pb-10">
+                <div class="title">
+                    <h2>Groups</h2>
+                </div>
+                <div>
+                    <a class="logout-link" href="/logout">Logout</a>
+                </div>
             </div>
-
             <?php
-                if(!empty($chats)):
+
+            use Morilog\Jalali\Jalalian;
+
+            if(!empty($chats)):
                     foreach($chats as $chat):
                         foreach($chatsLastMessage as $message)
                         {
@@ -29,12 +36,12 @@
                             }
                         }
             ?>
-            <a href="/chats/messages?id=<?= $chat->id?>">
+            <a class="chat-group-list" href="/chats/messages?id=<?= $chat->id?>">
                 <img src="<?= $chat->image ?>" alt="theAvengers">
                 <div class="nameBx">
                     <div class="name">
                         <h2><?= $chat->name ?></h2>
-                        <h4><span><?= $lastMessage->created_at ?></span></h4>
+                        <h4><span><?= Jalalian::forge($lastMessage->created_at)->format('Y-m-d H:i') ?></span></h4>
                     </div>
                     <div class="mess">
                         <h3><?= substr($lastMessage->body, '0', '20') ?></h3>
